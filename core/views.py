@@ -3,8 +3,9 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
-from core.models import Author, Category
+from core.models import Author, Category, PublishingCompany
 
 
 class CategorySerializer(ModelSerializer):
@@ -116,3 +117,18 @@ class AuthorDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+
+
+class PublishingCompanySerializer(ModelSerializer):
+    """Serializer class that serializes data from the PublishingCompany model."""
+
+    class Meta:
+        model = PublishingCompany
+        fields = "__all__"
+
+
+class PublishingCompanyViewSet(ModelViewSet):
+    """View class that retrieves data from the PublishingCompany model and returns it as a JSON response."""
+
+    queryset = PublishingCompany.objects.all()
+    serializer_class = PublishingCompanySerializer
