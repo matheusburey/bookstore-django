@@ -23,4 +23,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/category/", views.CategoryView.as_view()),
     path("api/category/<int:category_id>", views.CategoryDetailView.as_view()),
+    path("api/author/", views.AuthorView.as_view()),
+    path("api/author/<int:pk>", views.AuthorDetailView.as_view()),
 ]
