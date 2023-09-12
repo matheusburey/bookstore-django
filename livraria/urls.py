@@ -22,4 +22,5 @@ from core import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/category/", views.CategoryView.as_view()),
+    path("api/category/<int:category_id>", views.CategoryDetailView.as_view()),
 ]
