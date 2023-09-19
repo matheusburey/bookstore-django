@@ -1,19 +1,9 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 
-from core.models import Author, Category, PublishingCompany
-
-
-class CategorySerializer(ModelSerializer):
-    """Serializer class that serializes data from the Category model."""
-
-    class Meta:
-        model = Category
-        fields = "__all__"
+from core.models import Category
+from core.serializers import CategorySerializer
 
 
 class CategoryView(APIView):
@@ -95,40 +85,3 @@ class CategoryDetailView(APIView):
         category = get_object_or_404(Category.objects.all(), id=category_id)
         category.delete()
         return Response(status=204)
-
-
-class AuthorSerializer(ModelSerializer):
-    """Serializer class that serializes data from the Author: Firstname Lastname."""
-
-    class Meta:
-        model = Author
-        fields = "__all__"
-
-
-class AuthorView(ListCreateAPIView):
-    """View class that retrieves data from the Author: Firstname Lastname and returns it as a JSON response."""
-
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-
-
-class AuthorDetailView(RetrieveUpdateDestroyAPIView):
-    """View class that retrieves data from the Author: Firstname Lastname and returns it as a JSON response."""
-
-    queryset = Author.objects.all()
-    serializer_class = AuthorSerializer
-
-
-class PublishingCompanySerializer(ModelSerializer):
-    """Serializer class that serializes data from the PublishingCompany model."""
-
-    class Meta:
-        model = PublishingCompany
-        fields = "__all__"
-
-
-class PublishingCompanyViewSet(ModelViewSet):
-    """View class that retrieves data from the PublishingCompany model and returns it as a JSON response."""
-
-    queryset = PublishingCompany.objects.all()
-    serializer_class = PublishingCompanySerializer
