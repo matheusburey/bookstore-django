@@ -23,6 +23,8 @@ from core import views
 router = routers.DefaultRouter()
 
 router.register(r"publishing_company", views.PublishingCompanyViewSet)
+router.register(r"book", views.BookViewSet)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
