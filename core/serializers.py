@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from core.models import Author, Book, Category, Order, PublishingCompany
+from core.models import Author, Book, Category, Order, OrderItem, PublishingCompany
 
 
 class CategorySerializer(ModelSerializer):
@@ -51,15 +51,36 @@ class BookSerializer(ModelSerializer):
         return [author.name for author in authors]
 
 
+class OrderItemSerializer(ModelSerializer):
+    """Serializer class that serializes data from the OrderItem model."""
+
+    sub_total = SerializerMethodField()
+
+    class Meta:
+        model = OrderItem
+        fields = ["id", "book", "quantity", "sub_total"]
+        depth = 1
+
+    def get_sub_total(self, obj):
+        """Get the sub-total of an object."""
+        return obj.book.price * obj.quantity
+
+
 class OrderSerializer(ModelSerializer):
     """Serializer class that serializes data from the Order model."""
 
     client = SerializerMethodField()
+    status = SerializerMethodField()
+    items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = ["id", "total", "client", "status", "items"]
 
     def get_client(self, obj):
         """Get the user of an object."""
         return obj.client.name
+
+    def get_status(self, obj):
+        """Get the status of an object."""
+        return obj.get_status_display()

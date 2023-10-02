@@ -74,6 +74,15 @@ class Order(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="orders")
     status = models.IntegerField(choices=Status.choices, default=Status.CART)
 
+    @property
+    def total(self):
+        """Get the total of an object."""
+        query = self.items.all()
+        aggregate = query.aggregate(
+            total=models.Sum(models.F("book__price") * models.F("quantity"))
+        )
+        return aggregate["total"]
+
     def __str__(self) -> str:
         return f"#{self.id} - {self.client.name}"
 
