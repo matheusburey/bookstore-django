@@ -24,6 +24,7 @@ router = routers.DefaultRouter()
 
 router.register(r"publishing_company", views.PublishingCompanyViewSet)
 router.register(r"book", views.BookViewSet)
+router.register(r"order", views.OrderViewSet)
 
 
 urlpatterns = [
