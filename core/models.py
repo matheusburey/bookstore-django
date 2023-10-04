@@ -93,3 +93,6 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
     book = models.ForeignKey(Book, on_delete=models.PROTECT, related_name="+")
     quantity = models.IntegerField()
+
+    def __str__(self) -> str:
+        return str(self.book)

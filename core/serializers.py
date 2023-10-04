@@ -58,7 +58,7 @@ class OrderItemSerializer(ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ["id", "book", "quantity", "sub_total"]
+        fields = ("id", "book", "quantity", "sub_total")
         depth = 1
 
     def get_sub_total(self, obj):
@@ -75,7 +75,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["id", "total", "client", "status", "items"]
+        fields = ("id", "total", "client", "status", "items")
 
     def get_client(self, obj):
         """Get the user of an object."""
@@ -84,3 +84,29 @@ class OrderSerializer(ModelSerializer):
     def get_status(self, obj):
         """Get the status of an object."""
         return obj.get_status_display()
+
+
+class OrderItemCreateSerializer(ModelSerializer):
+    """Serializer class that serializes data from the OrderItem model."""
+
+    class Meta:
+        model = OrderItem
+        fields = ("book", "quantity")
+
+
+class OrderCreateSerializer(ModelSerializer):
+    """Serializer class that serializes data from the OrderItem model."""
+
+    items = OrderItemCreateSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = ("client", "items")
+
+    def create(self, validated_data):
+        items = validated_data.pop("items")
+        order = Order.objects.create(**validated_data)
+        for item in items:
+            OrderItem.objects.create(order=order, **item)
+        order.save()
+        return order
