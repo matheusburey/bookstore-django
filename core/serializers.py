@@ -101,7 +101,7 @@ class OrderCreateSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("client", "items")
+        fields = ("id", "client", "items")
 
     def create(self, validated_data):
         items = validated_data.pop("items")
@@ -110,3 +110,12 @@ class OrderCreateSerializer(ModelSerializer):
             OrderItem.objects.create(order=order, **item)
         order.save()
         return order
+
+    def update(self, instance, validated_data):
+        """Update an instance of the model."""
+        items = validated_data.pop("items")
+        if items:
+            instance.items.all().delete()
+        for item in items:
+            OrderItem.objects.create(order=instance, **item)
+        return instance
