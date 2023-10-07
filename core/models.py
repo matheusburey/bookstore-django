@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -48,17 +49,6 @@ class Book(models.Model):
         return f"#{self.id} - {self.title}"
 
 
-class Client(models.Model):
-    """Client model."""
-
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20)
-
-    def __str__(self) -> str:
-        return f"#{self.id} - {self.name}"
-
-
 class Order(models.Model):
     """Order model."""
 
@@ -71,7 +61,7 @@ class Order(models.Model):
         DELIVERED = 3, "Delivered"
         CANCELLED = 4, "Cancelled"
 
-    client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="orders")
+    client = models.ForeignKey(User, on_delete=models.PROTECT, related_name="orders")
     status = models.IntegerField(choices=Status.choices, default=Status.CART)
 
     @property
@@ -84,7 +74,7 @@ class Order(models.Model):
         return aggregate["total"]
 
     def __str__(self) -> str:
-        return f"#{self.id} - {self.client.name}"
+        return f"#{self.id} - {self.client.username}"
 
 
 class OrderItem(models.Model):

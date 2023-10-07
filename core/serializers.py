@@ -1,4 +1,10 @@
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.serializers import (
+    CurrentUserDefault,
+    HiddenField,
+    ModelSerializer,
+    SerializerMethodField,
+    ValidationError,
+)
 
 from core.models import Author, Book, Category, Order, OrderItem, PublishingCompany
 
@@ -79,7 +85,7 @@ class OrderSerializer(ModelSerializer):
 
     def get_client(self, obj):
         """Get the user of an object."""
-        return obj.client.name
+        return obj.client.id
 
     def get_status(self, obj):
         """Get the status of an object."""
@@ -93,11 +99,18 @@ class OrderItemCreateSerializer(ModelSerializer):
         model = OrderItem
         fields = ("book", "quantity")
 
+    def validate(self, attrs):
+        """Validate the attrs."""
+        if attrs["quantity"] > attrs["book"].quantity:
+            raise ValidationError("Not enough books in stock.")
+        return attrs
+
 
 class OrderCreateSerializer(ModelSerializer):
     """Serializer class that serializes data from the OrderItem model."""
 
     items = OrderItemCreateSerializer(many=True)
+    client = HiddenField(default=CurrentUserDefault())
 
     class Meta:
         model = Order
