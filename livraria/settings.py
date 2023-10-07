@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,12 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = ["rest_framework", "drf_spectacular", "rest_framework_simplejwt"]
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "drf_spectacular",
+    "corsheaders",
+    "rest_framework_simplejwt",
+]
 
 MY_APPS = ["core"]
 
@@ -41,6 +47,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "livraria.urls"
@@ -131,3 +139,11 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("Bearer"),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
